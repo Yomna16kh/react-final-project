@@ -29,22 +29,22 @@ function App() {
       <AuthProvider>
         <FavoritesProvider>
           <Router>
-            <Box sx={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              minHeight: '100vh' 
+            <Box sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: '100vh'
             }}>
               <Navbar onSearch={handleSearch} />
-              
-              <Box component="main" sx={{ 
-                flexGrow: 1, 
+
+              <Box component="main" sx={{
+                flexGrow: 1,
                 pt: { xs: 7, sm: 8 },
                 pb: 2
               }}>
                 <Routes>
-                  <Route 
-                    path="/" 
-                    element={<HomePage searchTerm={searchTerm} />} 
+                  <Route
+                    path="/"
+                    element={<HomePage searchTerm={searchTerm} />}
                   />
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />
@@ -57,7 +57,7 @@ function App() {
                   <Route path="/admin/users" element={<AdminUsersPage />} />
                 </Routes>
               </Box>
-              
+
               <Footer />
             </Box>
           </Router>
