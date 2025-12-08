@@ -15,44 +15,49 @@ export const FavoritesProvider = ({ children }) => {
   const { user } = useAuth();
   const [favorites, setFavorites] = useState([]);
 
+  // טוען מועדפים מה-localStorage לפי המשתמש המחובר
   useEffect(() => {
     if (user) {
-      const savedFavorites = localStorage.getItem(`favorites_${user.id}`);
-      if (savedFavorites) {
-        setFavorites(JSON.parse(savedFavorites));
-      }
+      const saved = localStorage.getItem(`favorites_${user.id}`);
+      setFavorites(saved ? JSON.parse(saved) : []);
     } else {
-      setFavorites([]);
+      setFavorites([]); // אם התנתק – מרוקן
     }
   }, [user]);
 
+  const saveFavorites = (updated) => {
+    setFavorites(updated);
+    if (user) {
+      localStorage.setItem(`favorites_${user.id}`, JSON.stringify(updated));
+    }
+  };
+
   const addToFavorites = (cardId) => {
     if (!user) return;
-    
-    const newFavorites = [...favorites, cardId];
-    setFavorites(newFavorites);
-    localStorage.setItem(`favorites_${user.id}`, JSON.stringify(newFavorites));
+    if (favorites.includes(cardId)) return; // לא מוסיף פעמיים
+
+    const updated = [...favorites, cardId];
+    saveFavorites(updated);
   };
 
   const removeFromFavorites = (cardId) => {
     if (!user) return;
-    
-    const newFavorites = favorites.filter(id => id !== cardId);
-    setFavorites(newFavorites);
-    localStorage.setItem(`favorites_${user.id}`, JSON.stringify(newFavorites));
+
+    const updated = favorites.filter((id) => id !== cardId);
+    saveFavorites(updated);
   };
 
   const toggleFavorite = (cardId) => {
-    if (favorites.includes(cardId)) {
-      removeFromFavorites(cardId);
-    } else {
-      addToFavorites(cardId);
-    }
+    if (!user) return;
+
+    const updated = favorites.includes(cardId)
+      ? favorites.filter((id) => id !== cardId)
+      : [...favorites, cardId];
+
+    saveFavorites(updated);
   };
 
-  const isFavorite = (cardId) => {
-    return favorites.includes(cardId);
-  };
+  const isFavorite = (cardId) => favorites.includes(cardId);
 
   const value = {
     favorites,
@@ -67,4 +72,4 @@ export const FavoritesProvider = ({ children }) => {
       {children}
     </FavoritesContext.Provider>
   );
-};
+}; 
